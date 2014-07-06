@@ -7,7 +7,7 @@ function run() {
     loadGotGreek = function () {
         yepnope({
             load: '//s3.amazonaws.com/got-greek/gotgreek.js',
-            callback: gotGreek.boot
+            callback: function () { gotGreek.boot(); }
         });
     };
     if (document.getElementById('gotgreekcss') === null) {
