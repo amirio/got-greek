@@ -1,53 +1,49 @@
-AJAX translation bookmarklet
-=========
-_Note_: The majority of GotGreek's code, with some bug fixes, have been merged
-into [BabelFrog](http://github.com/dergachev/babelfrog).
+**Notes**:
 
-Upon activation, __GotGreek__ monitors user behavior and provides word or phrase
-translations (powered by [Google Translate API](https://developers.google.com/translate/)
-in the following fashion:
+1. The majority of GotGreek's code has been merged into
+   [BabelFrog](http://github.com/dergachev/babelfrog) with some bug fixes and
+   more features.
+1. GotGreek uses the [Google Translate API](https://developers.google.com/translate/)
+   through my personal credentials which has a 1,700 characters/day limit. So if you
+   want to actively use such a translator, again, see [BabelFrog](http://github.com/dergachev/babelfrog).
 
-1. If user clicks on the screen, GotGreek tries to find a word (bounded by
-   non-word characters) that contains the coordinates the user clicked at.
-2. If user makes a selection, upon release of the mouse, selection is pushed to
-   its non-word boundares and translation is provided.
-3. Translations are provided as persistent tooltips that are dismissed by
-   further user clicks.
-3. Upon initial loading of GotGreek, subsequent invokations of the bookmarklet
-   script will pause/start GotGreek.
-
-Languages:
-=========
-All language codes must be in compliance with [ISO 639-1](//en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
-for Google Translate to respond correctly. Currently, GotGreek tries to detect
-source language from attributes of `html` element (`lang` or `xml:lang`) with
-French as default fallback. Similarly, target language is detected from
-`navigator` settings with English as default fallback.
-
-Known Issues
+What is it?
 =========
 
-1. If the subject page is served by a server with certain
-   [Content Security Policy](//developer.mozilla.org/en-US/docs/Security/CSP/Introducing_Content_Security_Policy)
-   directives, the bookmarklet might break since it might not be able to inject
-   the libraries it needs to operate in the page (for example look at
-   [Facebook](//www.facebook.com) or [GitHub](//www.github.com)).
-2. If the HTML element in the page on which GotGreek is being activated has
-   its `lang` attribute set to a non-standard value, Google would respond with
-   an error.
-3. `Yepnope.js` does not set the `type` attribute in the `script` tags it injects.
-   Depending on the user browser this *might* cause some errors, since a
-   `script` tag must have its type attribute set appropriately in HTML versions
-   upto 4 and in XHTML.
-4. If the page has any global variable named `jQuery` which is not actually
-   jQuery, the script will fail.
-5. If `usePowerTip` is enabled, in some pages (potentially due to similar
-   reasons as in [3]) where `$` is assigned something but its conventional
-   jQuery, the `jquery.powertip.js` script will not bind `powerTip()` to
-   `jQuery.prototype` (for example look at [LeMonde](http://www.lemonde.fr)).
-6. If `config.usePowerTip` is set to `true`, GotGreek will not work on pages
-   that already have loaded a version of jQuery prior to `1.7.0` (for example
-   see [LaPresse](http://www.lapresse.ca)).
-7. If there happens to be a `script` element in the DOM between the beginning
+GotGreek is a [bookmarklet](http://marklets.com/FAQ.aspx#whatsABookmarklet) that
+provides word or phrase translations as tooltips. Running the bookmarklet activates
+GotGreek which will provide a translation tooltip anytime the user selects some text,
+or clicks on a word.
+
+Dev Notes:
+=========
+1. All language codes, see `gotGreek.config.source` and `gotGreek.config.target`,
+   must be in compliance with [ISO 639-1](//en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
+   for Google Translate to respond correctly.
+1. GotGreek tries to detect source language from attributes of the `html` element
+   (`lang` or `xml:lang`) with French as default fallback. Similarly, target 
+   language is detected from `navigator` settings with English as default fallback.
+1. Consequently, if the target HTML element has its `lang` attribute set to a
+   non-standard value, GotGreek fails.
+1. If the HTTP response that delivers the site contains the `Content-Security-Policy`
+   HTTP header (see
+   [Content SecurityPolicy](//developer.mozilla.org/en-US/docs/Security/CSP/Introducing_Content_Security_Policy)),
+   depending on the browser, GotGreek might fail to inject its dependencies.
+   [Facebook](//www.facebook.com) and [GitHub](//www.github.com) are examples.
+1. `Yepnope.js` does not set the `type` attribute in the `script` tags it injects.
+   Since `type` was mandatory in HTML verions upto 4 and in XHTML, depending on the browser,
+   GotGreek might crash.
+1. GotGreek uses the existing `jQuery` object if one exists. In cases where the
+   `jQuery` variable in the global scope points to an arbitrary object (could be a 
+   peculiarly patched version of jQuery), GotGreek will crash.
+1. `gotGreek.config.usePowerTip` is hardcoded to `false`. Setting it to `true`,
+   will cause toolips to be generated by [PowerTip](http://stevenbenner.github.io/jquery-powertip/).
+1. However, with PowerTip enabled, GotGreek might crash on some sites:
+   1. Some sites, for example [LeMonde](http://www.lemonde.fr), assign `$` to
+      to something but `jQuery` which causes `jquery.powertip.js` to not
+      bind `powerTip()` to `jQuery.prototype`.
+   1. Some sites, for example [LaPresse](http://www.lapresse.ca), ship with versions
+      of JavaScript older than `1.7.0` which is the minimum requirement for PowerTip.
+1. If there happens to be a `script` element in the DOM between the beginning
    and end nodes of user selection, the text that GotGreek translates will
-   include the JavaScript code inside the `script`.
+   include the JavaScript code inside the `script` too.
