@@ -1,21 +1,21 @@
-//javascript:
 /*global document, yepnope, gotGreek*/
+javascript:
 function run() {
-    // in all URLs leave protocol unspecified (e.g. '//url/goes/here')
+    // in all URLs leave the protocol unspecified (e.g. '//url/goes/here')
     // to allow for http and/or https
     var style, menu, yepnopeScript, loadGotGreek;
     loadGotGreek = function () {
         yepnope({
-            load: '//raw.githubusercontent.com/amirkdv/got-greek/master/gotgreek.js';
-            callback: function () { gotGreek.boot(); }
+            load: '//s3.amazonaws.com/got-greek/gotgreek.js',
+            callback: gotGreek.boot
         });
-    }
+    };
     if (document.getElementById('gotgreekcss') === null) {
         style = document.createElement('link');
         style.id = 'gotgreekcss';
         style.type = 'text/css';
         style.rel = 'stylesheet';
-        style.href = '//raw.githubusercontent.com/amirkdv/got-greek/master/gotgreek.css';
+        style.href = '//s3.amazonaws.com/got-greek/gotgreek.css';
         menu = document.createElement('div');
         document.head.appendChild(style);
         menu.setAttribute('id', 'gotGreek-menu');
